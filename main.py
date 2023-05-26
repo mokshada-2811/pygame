@@ -19,7 +19,8 @@ rect_hero= hero.get_rect(midbottom=(x,y))
 rocket1=pygame.transform.scale(hero,(60,90))
 pygame.display.set_caption("Cosmic conquest")
 ob1=pygame.transform.scale(pygame.image.load('ob1.jpg').convert(),(20,30))
-
+obs=pygame.transform.scale(pygame.image.load('obstacle.png').convert(),(80,80))
+rect_obs=obs.get_rect(midbottom=(400,100))
 # colors
 black =(0, 0, 0)
 white = (255, 255, 255) 
@@ -66,6 +67,7 @@ def start_screen():
 def game_loop():
     # Get the start time
     start_time = time.time()
+    bullet_fired = False
     while True:
         # Event Handler
         for events in pygame.event.get():
@@ -73,6 +75,9 @@ def game_loop():
                 # Quitting game
                 pygame.quit();
                 quit()
+            if events.type == pygame.KEYUP:
+                if events.key == pygame.K_SPACE:
+                    bullet_fired = False
         # Move the stars downwards and redraw them
         screen.fill((0, 0, 0))  # Fill the screen with black color
 
@@ -116,14 +121,25 @@ def game_loop():
         if rect_hero.x<20:
             rect_hero.x=30
         screen.blit(rocket1,rect_hero)
+        screen.blit(obs,rect_obs)
         
         if keys_pressed[pygame.K_SPACE]:
          #bullet code
-            obx=rect_hero.x + (rect_hero.width // 2)
-            oby=rect_hero.y
-            rect_ob1 = ob1.get_rect(midbottom=(obx, oby )) # adjust y coordinate
-            # rect_ob1=ob1.get_rect(midbottom=(obx,oby))
-            screen.blit(ob1,rect_ob1)
+          # Only fire if the bullet is not already on the screen
+            if not bullet_fired:
+                bullet_fired = True
+                obx=29+rect_hero.x
+                oby=rect_hero.y
+                rect_ob1 = ob1.get_rect(midbottom=(obx, oby ))
+                bullet_speed = 1
+            # Move the bullet upwards and redraw it
+            if rect_ob1.bottom > 0:
+                rect_ob1.y -= bullet_speed
+                screen.blit(ob1, rect_ob1)
+            # Reset the bullet position and flag when it goes off the screen
+            else:
+                bullet_fired = False
+                rect_ob1 = ob1.get_rect(midbottom=(0, 0))  
 
         pygame.display.update()
 
