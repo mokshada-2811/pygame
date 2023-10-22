@@ -188,6 +188,7 @@ def bullet():
     while bullet_fired:
         # Move the bullet upwards and redraw it
         if rect_ob1.bottom > 0 and rect_ob1!=None:
+            time.sleep(0.0001)
             rect_ob1.y -= bullet_speed
             screen.blit(ob1, rect_ob1)
         # Reset the bullet position and flag when it goes off the screen
